@@ -1,3 +1,4 @@
+import { signIn } from "@/auth";
 import { TextField } from "@mui/material";
 import { FcGoogle } from "react-icons/fc";
 import { VscGithubInverted } from "react-icons/vsc";
@@ -23,12 +24,24 @@ export default function Home() {
         </form>
         <p className="text-center text-gray-400">or sign up with</p>
         <div className="flex justify-center gap-4">
-        <form>
+        <form 
+            action={async()=>{
+              "use server"
+              await signIn("google")
+
+            }}
+        >
           <button className="w-10px h-30px border border-gray-300 cursor pointer rounded-md shadow-lg ">
             <FcGoogle className="text-4xl" />
           </button>
         </form>
-        <form>
+        <form
+           action={async()=>{
+            "use server"
+            await signIn("github")
+            
+           }}
+        >
           <button className="w-10px h-30px border border-gray-300 cursor pointer rounded-md shadow-lg ">
             <VscGithubInverted className="text-4xl" />
           </button>
