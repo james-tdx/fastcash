@@ -97,7 +97,7 @@ We offer transparent interest rates<br></br> with no hidden fees,<br></br> helpi
         alt="cal.png"
         width={60}
         height={60}/>
-        <h1 className="mt-5 pb-3 md:mt-5">Secure Data</h1>
+        <h1 className="mt-5 pb-3 md:mt-5n">Secure Data</h1>
         <p className="mb-9 md:mt-5">Your financial information is protected with bank-level encryption. Your privacy is our top priority</p>
         </div>
       </div>

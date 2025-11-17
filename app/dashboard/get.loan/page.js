@@ -1,11 +1,12 @@
    "use client"
 import { db } from "@/config/firebase.config";
-import { TextField } from "@mui/material";
+import { CircularProgress, TextField } from "@mui/material";
 import { addDoc, collection } from "firebase/firestore";
 import { useFormik } from "formik";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import* as yup from "yup"
+
 
 
 
@@ -27,12 +28,14 @@ export default function GetLoan () {
     const [rate,setRate] = useState(0)
     const [LoanDuration,setLoanDuration] = useState(0)
     const[repayment,setRepayment] = useState(0)
+    const [opsProgress,setOpsProgress] = useState(false);
 
     const {handleSubmit,handleChange, values,touched, errors}= useFormik ({
         initialValues: {
             amount: 0,
         },
         onSubmit:async ()=>{
+            setOpsProgress(true)
             try {
                 await addDoc(collection(db,"loans"),{
                     user: session?.user?.id,
@@ -42,10 +45,12 @@ export default function GetLoan () {
                     repayment:repayment,
                     timeofRequest:new Date(),
                 })
+                setOpsProgress(false)
                 alert(`Loan request successful`)
             }
             catch(errors){
-                console.error("Error taking loans", errors)
+                setOpsProgress(false);
+                console.error("Error taking loans", errors);
             }
             
         },
@@ -111,8 +116,9 @@ export default function GetLoan () {
                         <p  className="text-indigo-200">Repayment amount</p>
                         <p className="text-white text-4xl">₦ {repayment}</p>
                     </div>
-                    <div>
+                    <div className="flex gap-3 items-center">
                         <button type="submit" className="p-2 rounded-md bg-indigo-800 text-white uppercase">Get loan</button>
+                       { opsProgress? <CircularProgress sx={{Color:"purple"}} size="30px" /> : null}
                     </div>
                 </form>
 
