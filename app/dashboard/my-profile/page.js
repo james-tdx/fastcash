@@ -1,19 +1,44 @@
 "use client"
 import { db } from "@/config/firebase.config";
 import { collection, getDoc } from "firebase/firestore";
+import { collection,  getDocs, query, where } from "firebase/firestore";
 import { useSession } from "next-auth/react";
-import Image from "next/image"
+import Image from "next/image";
 import { useEffect } from "react";
+import { useEffect, useState } from "react";
+where
 
 export default function MyProfile () {
-    const {session} = useSession();
-    useEffect(()=>{
-        const fetchProfile = async ()=>{
-            const docRef = collection(db, "profileDetails", session?.user?.id);
-            const onSnap = await getDoc(docRef)
-
+      const {data: session} = useSession();
+         useEffect(()=>{
+            const fetchProfile = async ()=>{
+                const docRef  = collection(db, "profileDetails", session?.user?.id);
+                const onSnap = await getDoc(docRef);
             }
-        })
+         })
+      const [profileData,setProfileData] = useState(null);
+
+       useEffect(()=>{
+          const fetchProfile =async ()=>{
+             try {
+               const q = query(collection(db, "profileDetails"),
+                       where("user", "==", session?.user?.id)
+                      );
+                      const onSnap = await getDocs(q);
+                      if (!onSnap.empty) {
+                        const docData = onSnap.docs[0];
+                        setProfileData({id: docData.id,...docData.data()});
+                      }else {
+                        console.log("profile not found");
+                      }
+             }
+             catch (errors) {
+                 console.error("Error fetching profile data", errors);
+             }
+          }
+          fetchProfile();
+       },[session])
+      
     return (
         <main className="min-h-screen flex justify-center py-5 md:py-6 md:px-12 lg:py-8 lg:px-16">
             <div className="w-full md:w-[350px] flex flex-col rounded-md shadow-md px-4 md:shadow-indigo-200 ">
@@ -24,11 +49,11 @@ export default function MyProfile () {
                          width={80}
                          height={80}
                          alt="profile-image"
-                         src="/bg2.jpg"
+                         src="/mybg.png"
                          className="w-20 h-20 rounded-full "
                         />
                         <div>
-                           <p className="text-sm text-gray-800">{session?.user?.name.toUpperCase()}</p> 
+                           <p className="text-sm text-gray-800  "> {session?.user?.name.toUpperCase()} </p> 
                            <p className="text-xs text-gray-600">{session?.user?.email} </p>
                            <p className="text-center text-xs text-indigo-400">Tier 1</p>
                         </div>
@@ -38,26 +63,32 @@ export default function MyProfile () {
                        <div className="flex justify-between mb-3">
                            <p className="text-gray-800">BVN</p>
                            <p className="text-gray-400">427667287484</p>
+                           <p className="text-gray-400">{profileData?.bvn}</p>
                        </div>
                        <div className="flex justify-between mb-3">
                            <p className="text-gray-800">NIN</p>
                            <p className="text-gray-400">36874678572</p>
+                           <p className="text-gray-400">{profileData?.nin}</p>
                        </div>
                        <div className="flex justify-between mb-3">
                            <p className="text-gray-800">Gender</p>
                            <p className="text-gray-400">Male</p>
+                           <p className="text-gray-400">{profileData?.gender}</p>
                        </div>
                        <div className="flex justify-between mb-3">
                            <p className="text-gray-800">Date of birth</p>
                            <p className="text-gray-400">24/04/2000</p>
+                           <p className="text-gray-400">{profileData?.dob}</p>
                        </div>
                        <div className="flex justify-between mb-3">
                            <p className="text-gray-800">Phone Number</p>
                            <p className="text-gray-400">0803678860</p>
+                           <p className="text-gray-400">{profileData?.phone}</p>
                        </div>
                        <div className="flex justify-between mb-3">
                            <p className="text-gray-800">Address</p>
                            <p className="text-gray-400">BLK F,NIA Quartrs Maitama </p>
+                           <p className="text-gray-400">{profileData?.address} </p>
                        </div>
                     </div>
                 </div>
@@ -67,3 +98,7 @@ export default function MyProfile () {
         </main>
     )
 }
+
+            
+
+   
