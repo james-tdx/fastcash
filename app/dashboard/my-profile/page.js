@@ -1,21 +1,13 @@
-"use client"
+ "use client"
 import { db } from "@/config/firebase.config";
-import { collection, getDoc } from "firebase/firestore";
 import { collection,  getDocs, query, where } from "firebase/firestore";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
-import { useEffect } from "react";
+import { redirect } from "next/navigation";
 import { useEffect, useState } from "react";
-where
 
 export default function MyProfile () {
       const {data: session} = useSession();
-         useEffect(()=>{
-            const fetchProfile = async ()=>{
-                const docRef  = collection(db, "profileDetails", session?.user?.id);
-                const onSnap = await getDoc(docRef);
-            }
-         })
       const [profileData,setProfileData] = useState(null);
 
        useEffect(()=>{
@@ -38,7 +30,10 @@ export default function MyProfile () {
           }
           fetchProfile();
        },[session])
-      
+       if (!session) {
+           redirect("/auth/login")
+       }
+
     return (
         <main className="min-h-screen flex justify-center py-5 md:py-6 md:px-12 lg:py-8 lg:px-16">
             <div className="w-full md:w-[350px] flex flex-col rounded-md shadow-md px-4 md:shadow-indigo-200 ">
@@ -62,42 +57,42 @@ export default function MyProfile () {
                        <p className="text-center text-lg ">Other Informations</p>  
                        <div className="flex justify-between mb-3">
                            <p className="text-gray-800">BVN</p>
-                           <p className="text-gray-400">427667287484</p>
                            <p className="text-gray-400">{profileData?.bvn}</p>
                        </div>
                        <div className="flex justify-between mb-3">
                            <p className="text-gray-800">NIN</p>
-                           <p className="text-gray-400">36874678572</p>
                            <p className="text-gray-400">{profileData?.nin}</p>
                        </div>
                        <div className="flex justify-between mb-3">
                            <p className="text-gray-800">Gender</p>
-                           <p className="text-gray-400">Male</p>
                            <p className="text-gray-400">{profileData?.gender}</p>
                        </div>
                        <div className="flex justify-between mb-3">
                            <p className="text-gray-800">Date of birth</p>
-                           <p className="text-gray-400">24/04/2000</p>
                            <p className="text-gray-400">{profileData?.dob}</p>
                        </div>
                        <div className="flex justify-between mb-3">
                            <p className="text-gray-800">Phone Number</p>
-                           <p className="text-gray-400">0803678860</p>
                            <p className="text-gray-400">{profileData?.phone}</p>
                        </div>
                        <div className="flex justify-between mb-3">
                            <p className="text-gray-800">Address</p>
-                           <p className="text-gray-400">BLK F,NIA Quartrs Maitama </p>
                            <p className="text-gray-400">{profileData?.address} </p>
                        </div>
                     </div>
+                     <form >
+                        <button onClick={()=>{ signOut()}} type="submit" className="w-[100px] h-10 bg-red-600 text-white rounded-md shadow-md cursor-pointer ">Logout</button>
+                    </form>
                 </div>
+               
 
             </div>
 
         </main>
     )
 }
+
+
 
             
 

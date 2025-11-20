@@ -114,7 +114,7 @@ export default function GetLoan () {
                     </div>
                     <div className="flex flex-col gap-3 bg-linear-to-b from bg-indigo-400 to-indigo-900 border-dashed border-indigo-600 p-4 rounded-md">
                         <p  className="text-indigo-200">Repayment amount</p>
-                        <p className="text-white text-4xl">₦ {repayment}</p>
+                        <p className="text-white text-4xl">₦ {repayment.toLocaleString()}</p>
                     </div>
                     <div className="flex gap-3 items-center">
                         <button type="submit" className="p-2 rounded-md bg-indigo-800 text-white uppercase">Get loan</button>
